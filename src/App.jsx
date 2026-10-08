@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
-const API_BASE = "/api";
+const API_BASE = "https://bayora-web.onrender.com";
 
 const attackTypes = [
   "Prompt Injection",
@@ -18,13 +18,7 @@ function App() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [backendOnline, setBackendOnline] = useState(false);
-
-  // Live Security Zone state
   const [zoneDecision, setZoneDecision] = useState(null);
-
-  /* ============================================================
-     LOAD AUDIT LOGS
-  ============================================================ */
 
   const loadLogs = async () => {
     try {
@@ -52,10 +46,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  /* ============================================================
-     STATISTICS
-  ============================================================ */
-
   const stats = useMemo(() => {
     const blocked = logs.filter(
       (log) => log.decision === "BLOCK"
@@ -81,10 +71,6 @@ function App() {
       critical,
     };
   }, [logs]);
-
-  /* ============================================================
-     RUN SECURITY TEST
-  ============================================================ */
 
   const runSecurityTest = async () => {
     if (!prompt.trim()) {
@@ -118,12 +104,8 @@ function App() {
         );
       }
 
-      // Save result for Security Lab
       setResult(data);
-
-      // Update live Security Zones
       setZoneDecision(data);
-
       setPrompt("");
 
       await loadLogs();
@@ -131,16 +113,12 @@ function App() {
       console.error(error);
 
       alert(
-        "Unable to connect to Bayora Security API. Make sure the backend is running on port 8000."
+        "Unable to connect to Bayora Security API. Check the deployed backend."
       );
     } finally {
       setLoading(false);
     }
   };
-
-  /* ============================================================
-     HELPERS
-  ============================================================ */
 
   const getDecisionClass = (decision) => {
     if (decision === "BLOCK") return "danger";
@@ -154,40 +132,21 @@ function App() {
     return "success";
   };
 
-  /* ============================================================
-     APP
-  ============================================================ */
-
   return (
     <div className="app-shell">
-
-      {/* ========================================================
-          SIDEBAR
-      ======================================================== */}
-
       <aside className="sidebar">
 
         <div className="brand">
-
-          <div className="brand-mark">
-            B
-          </div>
+          <div className="brand-mark">B</div>
 
           <div>
             <h1>BAYORA</h1>
             <span>AI SECURITY PLATFORM</span>
           </div>
-
         </div>
 
-
-        {/* PLATFORM */}
-
         <div className="sidebar-section">
-
-          <p className="sidebar-label">
-            PLATFORM
-          </p>
+          <p className="sidebar-label">PLATFORM</p>
 
           <button
             className={
@@ -195,14 +154,11 @@ function App() {
                 ? "nav-item active"
                 : "nav-item"
             }
-            onClick={() =>
-              setActivePage("Dashboard")
-            }
+            onClick={() => setActivePage("Dashboard")}
           >
             <span>◆</span>
             Dashboard
           </button>
-
 
           <button
             className={
@@ -210,14 +166,11 @@ function App() {
                 ? "nav-item active"
                 : "nav-item"
             }
-            onClick={() =>
-              setActivePage("Security Lab")
-            }
+            onClick={() => setActivePage("Security Lab")}
           >
             <span>⌁</span>
             Security Lab
           </button>
-
 
           <button
             className={
@@ -225,25 +178,15 @@ function App() {
                 ? "nav-item active"
                 : "nav-item"
             }
-            onClick={() =>
-              setActivePage("Security Zones")
-            }
+            onClick={() => setActivePage("Security Zones")}
           >
             <span>◈</span>
             Security Zones
           </button>
-
         </div>
 
-
-        {/* GOVERNANCE */}
-
         <div className="sidebar-section">
-
-          <p className="sidebar-label">
-            GOVERNANCE
-          </p>
-
+          <p className="sidebar-label">GOVERNANCE</p>
 
           <button
             className={
@@ -251,14 +194,11 @@ function App() {
                 ? "nav-item active"
                 : "nav-item"
             }
-            onClick={() =>
-              setActivePage("Policies")
-            }
+            onClick={() => setActivePage("Policies")}
           >
             <span>⊙</span>
             Policies
           </button>
-
 
           <button
             className={
@@ -266,27 +206,18 @@ function App() {
                 ? "nav-item active"
                 : "nav-item"
             }
-            onClick={() =>
-              setActivePage("Audit Logs")
-            }
+            onClick={() => setActivePage("Audit Logs")}
           >
             <span>≡</span>
             Audit Logs
           </button>
-
         </div>
 
-
-        {/* SYSTEM STATUS */}
-
         <div className="sidebar-bottom">
-
           <div className="system-status">
-
             <div className="status-dot"></div>
 
             <div>
-
               <strong>
                 {backendOnline
                   ? "System Operational"
@@ -298,46 +229,27 @@ function App() {
                   ? "Security engine connected"
                   : "Waiting for backend"}
               </span>
-
             </div>
-
           </div>
-
 
           <div className="version">
             BAYORA v2.0
           </div>
-
         </div>
-
       </aside>
-
-
-      {/* ========================================================
-          MAIN CONTENT
-      ======================================================== */}
 
       <main className="main-content">
 
-        {/* TOP BAR */}
-
         <header className="topbar">
-
           <div>
-
             <p className="breadcrumb">
               BAYORA / {activePage.toUpperCase()}
             </p>
 
-            <h2>
-              {activePage}
-            </h2>
-
+            <h2>{activePage}</h2>
           </div>
 
-
           <div className="topbar-right">
-
             <div className="live-status">
               <span className="pulse"></span>
               LIVE MONITORING
@@ -346,24 +258,14 @@ function App() {
             <div className="user-badge">
               SEC
             </div>
-
           </div>
-
         </header>
 
-
-        {/* =====================================================
-            DASHBOARD
-        ===================================================== */}
-
         {activePage === "Dashboard" && (
-
           <section className="page-content">
 
             <div className="hero-card">
-
               <div>
-
                 <span className="eyebrow">
                   ADVERSARIAL AI SECURITY
                 </span>
@@ -377,15 +279,12 @@ function App() {
                   policy decisions and AI security
                   events from one control plane.
                 </p>
-
               </div>
 
               <div className="hero-shield">
                 ◈
               </div>
-
             </div>
-
 
             <div className="stats-grid">
 
@@ -415,7 +314,6 @@ function App() {
 
             </div>
 
-
             <div className="dashboard-grid">
 
               <div className="panel">
@@ -423,7 +321,6 @@ function App() {
                 <div className="panel-header">
 
                   <div>
-
                     <span className="eyebrow">
                       LIVE ACTIVITY
                     </span>
@@ -431,7 +328,6 @@ function App() {
                     <h3>
                       Recent Security Events
                     </h3>
-
                   </div>
 
                   <button
@@ -445,19 +341,15 @@ function App() {
 
                 </div>
 
-                <EventList
-                  logs={logs.slice(0, 6)}
-                />
+                <EventList logs={logs.slice(0, 6)} />
 
               </div>
-
 
               <div className="panel">
 
                 <div className="panel-header">
 
                   <div>
-
                     <span className="eyebrow">
                       POLICY ENGINE
                     </span>
@@ -465,7 +357,6 @@ function App() {
                     <h3>
                       Gateway Status
                     </h3>
-
                   </div>
 
                   <span className="online-badge">
@@ -473,7 +364,6 @@ function App() {
                   </span>
 
                 </div>
-
 
                 <div className="gateway-status">
 
@@ -507,17 +397,10 @@ function App() {
               </div>
 
             </div>
-
           </section>
         )}
 
-
-        {/* =====================================================
-            SECURITY LAB
-        ===================================================== */}
-
         {activePage === "Security Lab" && (
-
           <section className="page-content">
 
             <div className="section-heading">
@@ -546,10 +429,7 @@ function App() {
 
             </div>
 
-
             <div className="lab-grid">
-
-              {/* TEST FORM */}
 
               <div className="panel test-panel">
 
@@ -573,10 +453,7 @@ function App() {
 
                 </div>
 
-
-                <label>
-                  ATTACK TYPE
-                </label>
+                <label>ATTACK TYPE</label>
 
                 <select
                   value={attackType}
@@ -584,20 +461,15 @@ function App() {
                     setAttackType(e.target.value)
                   }
                 >
-
                   {attackTypes.map((type) => (
-
                     <option
                       key={type}
                       value={type}
                     >
                       {type}
                     </option>
-
                   ))}
-
                 </select>
-
 
                 <label>
                   ADVERSARIAL PROMPT
@@ -612,28 +484,21 @@ function App() {
                   rows="8"
                 />
 
-
                 <button
                   className="run-button"
                   onClick={runSecurityTest}
                   disabled={loading}
                 >
-
                   {loading
                     ? "ANALYZING..."
                     : "RUN SECURITY TEST →"}
-
                 </button>
 
               </div>
 
-
-              {/* RESULT */}
-
               <div className="panel result-panel">
 
                 {!result && (
-
                   <div className="empty-result">
 
                     <div className="empty-icon">
@@ -650,12 +515,9 @@ function App() {
                     </p>
 
                   </div>
-
                 )}
 
-
                 {result && (
-
                   <div className="security-result">
 
                     <div className="result-title">
@@ -682,9 +544,6 @@ function App() {
 
                     </div>
 
-
-                    {/* THREAT BANNER */}
-
                     <div
                       className={`threat-banner ${getDecisionClass(
                         result.decision
@@ -692,26 +551,21 @@ function App() {
                     >
 
                       <div className="threat-icon">
-
                         {result.decision === "BLOCK"
                           ? "✕"
                           : result.decision === "REVIEW"
                           ? "!"
                           : "✓"}
-
                       </div>
-
 
                       <div>
 
                         <strong>
-
                           {result.decision === "BLOCK"
                             ? "THREAT BLOCKED"
                             : result.decision === "REVIEW"
                             ? "THREAT REQUIRES REVIEW"
                             : "REQUEST ALLOWED"}
-
                         </strong>
 
                         <span>
@@ -721,9 +575,6 @@ function App() {
                       </div>
 
                     </div>
-
-
-                    {/* RISK */}
 
                     <div className="risk-section">
 
@@ -740,7 +591,6 @@ function App() {
 
                       </div>
 
-
                       <div className="risk-bar">
 
                         <div
@@ -755,9 +605,6 @@ function App() {
                       </div>
 
                     </div>
-
-
-                    {/* DETAILS */}
 
                     <div className="detail-grid">
 
@@ -789,9 +636,6 @@ function App() {
 
                     </div>
 
-
-                    {/* POLICY GATEWAY */}
-
                     <div className="policy-card">
 
                       <div className="policy-card-header">
@@ -814,41 +658,24 @@ function App() {
 
                       </div>
 
-
                       <div className="policy-grid">
 
                         <div>
-
-                          <span>
-                            POLICY ID
-                          </span>
-
+                          <span>POLICY ID</span>
                           <strong>
                             {result.policy_id}
                           </strong>
-
                         </div>
 
-
                         <div>
-
-                          <span>
-                            POLICY
-                          </span>
-
+                          <span>POLICY</span>
                           <strong>
                             {result.policy_name}
                           </strong>
-
                         </div>
 
-
                         <div>
-
-                          <span>
-                            ACTION TAKEN
-                          </span>
-
+                          <span>ACTION TAKEN</span>
                           <strong
                             className={
                               result.intercepted
@@ -858,16 +685,10 @@ function App() {
                           >
                             {result.action_taken}
                           </strong>
-
                         </div>
 
-
                         <div>
-
-                          <span>
-                            INTERCEPTION
-                          </span>
-
+                          <span>INTERCEPTION</span>
                           <strong
                             className={
                               result.intercepted
@@ -879,11 +700,9 @@ function App() {
                               ? "REQUEST INTERCEPTED"
                               : "NOT INTERCEPTED"}
                           </strong>
-
                         </div>
 
                       </div>
-
 
                       <div className="policy-reason">
 
@@ -899,96 +718,70 @@ function App() {
 
                     </div>
 
-
-                    {/* THREATS */}
-
                     <div className="threat-list">
 
                       <span className="eyebrow">
                         DETECTED THREATS
                       </span>
 
-
                       {result.detected_threats &&
                       result.detected_threats.length > 0 ? (
-
                         <div className="threat-tags">
 
                           {result.detected_threats.map(
                             (threat) => (
-
                               <span
                                 className="threat-tag"
                                 key={threat}
                               >
                                 {threat}
                               </span>
+                            )
+                          )}
 
+                        </div>
+                      ) : (
+                        <span className="no-threat">
+                          No significant threat detected
+                        </span>
+                      )}
+
+                    </div>
+
+                    {result.matched_indicators &&
+                      result.matched_indicators.length > 0 && (
+
+                      <div className="indicator-section">
+
+                        <span className="eyebrow">
+                          MATCHED INDICATORS
+                        </span>
+
+                        <div className="indicator-list">
+
+                          {result.matched_indicators.map(
+                            (indicator) => (
+                              <span key={indicator}>
+                                {indicator}
+                              </span>
                             )
                           )}
 
                         </div>
 
-                      ) : (
-
-                        <span className="no-threat">
-                          No significant threat detected
-                        </span>
-
-                      )}
-
-                    </div>
-
-
-                    {/* INDICATORS */}
-
-                    {result.matched_indicators &&
-                      result.matched_indicators.length > 0 && (
-
-                        <div className="indicator-section">
-
-                          <span className="eyebrow">
-                            MATCHED INDICATORS
-                          </span>
-
-                          <div className="indicator-list">
-
-                            {result.matched_indicators.map(
-                              (indicator) => (
-
-                                <span
-                                  key={indicator}
-                                >
-                                  {indicator}
-                                </span>
-
-                              )
-                            )}
-
-                          </div>
-
-                        </div>
-
-                      )}
+                      </div>
+                    )}
 
                   </div>
-
                 )}
 
               </div>
 
             </div>
-
           </section>
         )}
 
-
-        {/* =====================================================
-            SECURITY ZONES
-        ===================================================== */}
-
         {activePage === "Security Zones" && (
-
           <section className="page-content">
 
             <div className="section-heading">
@@ -1011,29 +804,20 @@ function App() {
 
               </div>
 
-
               <div className="live-badge">
-
                 <span className="pulse"></span>
-
                 LIVE SECURITY FLOW
-
               </div>
 
             </div>
 
-
-            {/* LIVE DECISION STATUS */}
-
             <div className="zone-live-status">
 
               {!zoneDecision && (
-
                 <>
                   <span className="zone-status-dot idle"></span>
 
                   <div>
-
                     <strong>
                       SECURITY PIPELINE STANDBY
                     </strong>
@@ -1042,21 +826,16 @@ function App() {
                       Run a security test to activate
                       the live enforcement visualization.
                     </span>
-
                   </div>
                 </>
-
               )}
-
 
               {zoneDecision &&
                 zoneDecision.decision === "BLOCK" && (
-
                 <>
                   <span className="zone-status-dot blocked"></span>
 
                   <div>
-
                     <strong>
                       REQUEST BLOCKED AT POLICY GATEWAY
                     </strong>
@@ -1065,25 +844,20 @@ function App() {
                       High-risk adversarial activity was
                       intercepted before reaching the model.
                     </span>
-
                   </div>
 
                   <span className="zone-decision-badge blocked">
                     BLOCK
                   </span>
                 </>
-
               )}
-
 
               {zoneDecision &&
                 zoneDecision.decision === "REVIEW" && (
-
                 <>
                   <span className="zone-status-dot review"></span>
 
                   <div>
-
                     <strong>
                       REQUEST FLAGGED FOR REVIEW
                     </strong>
@@ -1092,25 +866,20 @@ function App() {
                       Medium-risk activity has been stopped
                       for additional security evaluation.
                     </span>
-
                   </div>
 
                   <span className="zone-decision-badge review">
                     REVIEW
                   </span>
                 </>
-
               )}
-
 
               {zoneDecision &&
                 zoneDecision.decision === "ALLOW" && (
-
                 <>
                   <span className="zone-status-dot allowed"></span>
 
                   <div>
-
                     <strong>
                       REQUEST PASSED POLICY GATEWAY
                     </strong>
@@ -1119,20 +888,15 @@ function App() {
                       Low-risk activity is permitted toward
                       the controlled model environment.
                     </span>
-
                   </div>
 
                   <span className="zone-decision-badge allowed">
                     ALLOW
                   </span>
                 </>
-
               )}
 
             </div>
-
-
-            {/* SECURITY ZONE FLOW */}
 
             <div className="zones-flow">
 
@@ -1149,7 +913,6 @@ function App() {
                 description="Untrusted adversarial input enters the testing environment."
               />
 
-
               <div
                 className={`flow-arrow ${
                   zoneDecision ? "active" : ""
@@ -1157,7 +920,6 @@ function App() {
               >
                 →
               </div>
-
 
               <Zone
                 type="gateway"
@@ -1181,7 +943,6 @@ function App() {
                 description="Threat detection, risk scoring and policy enforcement."
               />
 
-
               <div
                 className={`flow-arrow ${
                   zoneDecision?.decision === "ALLOW"
@@ -1191,7 +952,6 @@ function App() {
               >
                 →
               </div>
-
 
               <Zone
                 type="blue"
@@ -1215,7 +975,6 @@ function App() {
                 description="Only approved requests are allowed toward model execution."
               />
 
-
               <div
                 className={`flow-arrow ${
                   zoneDecision?.decision === "ALLOW"
@@ -1225,7 +984,6 @@ function App() {
               >
                 →
               </div>
-
 
               <Zone
                 type="cyan"
@@ -1251,11 +1009,7 @@ function App() {
 
             </div>
 
-
-            {/* LAST TEST */}
-
             {zoneDecision && (
-
               <div className="panel zone-test-panel">
 
                 <div className="panel-header">
@@ -1272,82 +1026,55 @@ function App() {
 
                   </div>
 
-
                   <span
-                    className={`decision-badge ${
-                      getDecisionClass(
-                        zoneDecision.decision
-                      )
-                    }`}
+                    className={`decision-badge ${getDecisionClass(
+                      zoneDecision.decision
+                    )}`}
                   >
                     {zoneDecision.decision}
                   </span>
 
                 </div>
 
-
                 <div className="zone-test-grid">
 
                   <div>
-                    <span>
-                      ATTACK TYPE
-                    </span>
-
+                    <span>ATTACK TYPE</span>
                     <strong>
                       {zoneDecision.attack_type}
                     </strong>
                   </div>
 
-
                   <div>
-                    <span>
-                      RISK SCORE
-                    </span>
-
+                    <span>RISK SCORE</span>
                     <strong>
                       {zoneDecision.risk_score}/100
                     </strong>
                   </div>
 
-
                   <div>
-                    <span>
-                      RISK LEVEL
-                    </span>
-
+                    <span>RISK LEVEL</span>
                     <strong>
                       {zoneDecision.risk_level}
                     </strong>
                   </div>
 
-
                   <div>
-                    <span>
-                      POLICY
-                    </span>
-
+                    <span>POLICY</span>
                     <strong>
                       {zoneDecision.policy_id}
                     </strong>
                   </div>
 
-
                   <div>
-                    <span>
-                      ACTION
-                    </span>
-
+                    <span>ACTION</span>
                     <strong>
                       {zoneDecision.action_taken}
                     </strong>
                   </div>
 
-
                   <div>
-                    <span>
-                      INCIDENT
-                    </span>
-
+                    <span>INCIDENT</span>
                     <strong>
                       {zoneDecision.incident_id}
                     </strong>
@@ -1356,11 +1083,7 @@ function App() {
                 </div>
 
               </div>
-
             )}
-
-
-            {/* SECURITY PIPELINE */}
 
             <div className="panel architecture-panel">
 
@@ -1379,7 +1102,6 @@ function App() {
                 </div>
 
               </div>
-
 
               <div className="pipeline">
 
@@ -1426,13 +1148,7 @@ function App() {
           </section>
         )}
 
-
-        {/* =====================================================
-            POLICIES
-        ===================================================== */}
-
         {activePage === "Policies" && (
-
           <section className="page-content">
 
             <div className="section-heading">
@@ -1454,19 +1170,12 @@ function App() {
 
               </div>
 
-
               <div className="live-badge">
-
                 <span className="pulse"></span>
-
                 POLICY ENGINE ACTIVE
-
               </div>
 
             </div>
-
-
-            {/* POLICY ENGINE STATUS */}
 
             <div className="panel">
 
@@ -1489,7 +1198,6 @@ function App() {
                 </span>
 
               </div>
-
 
               <div className="gateway-status">
 
@@ -1522,9 +1230,6 @@ function App() {
 
             </div>
 
-
-            {/* POLICY CARDS */}
-
             <div className="policy-list">
 
               <PolicyRow
@@ -1542,7 +1247,6 @@ function App() {
                 }
               />
 
-
               <PolicyRow
                 id="AI-SAFETY-002"
                 name="Medium Risk Security Review"
@@ -1557,7 +1261,6 @@ function App() {
                   ).length
                 }
               />
-
 
               <PolicyRow
                 id="AI-SAFETY-003"
@@ -1576,9 +1279,6 @@ function App() {
 
             </div>
 
-
-            {/* POLICY SUMMARY */}
-
             <div className="stats-grid">
 
               <StatCard
@@ -1591,7 +1291,6 @@ function App() {
                 icon="◈"
               />
 
-
               <StatCard
                 label="BLOCKED BY POLICY"
                 value={
@@ -1603,7 +1302,6 @@ function App() {
                 icon="✕"
               />
 
-
               <StatCard
                 label="SENT TO REVIEW"
                 value={
@@ -1614,7 +1312,6 @@ function App() {
                 }
                 icon="!"
               />
-
 
               <StatCard
                 label="ALLOWED"
@@ -1628,9 +1325,6 @@ function App() {
               />
 
             </div>
-
-
-            {/* POLICY FLOW */}
 
             <div className="panel">
 
@@ -1649,7 +1343,6 @@ function App() {
                 </div>
 
               </div>
-
 
               <div className="pipeline">
 
@@ -1690,13 +1383,7 @@ function App() {
           </section>
         )}
 
-
-        {/* =====================================================
-            AUDIT LOGS
-        ===================================================== */}
-
         {activePage === "Audit Logs" && (
-
           <section className="page-content">
 
             <div className="section-heading">
@@ -1718,7 +1405,6 @@ function App() {
 
               </div>
 
-
               <button
                 className="ghost-button"
                 onClick={loadLogs}
@@ -1727,7 +1413,6 @@ function App() {
               </button>
 
             </div>
-
 
             <div className="panel audit-panel">
 
@@ -1759,57 +1444,31 @@ function App() {
                     <thead>
 
                       <tr>
-
-                        <th>
-                          INCIDENT
-                        </th>
-
-                        <th>
-                          ATTACK
-                        </th>
-
-                        <th>
-                          RISK
-                        </th>
-
-                        <th>
-                          DECISION
-                        </th>
-
-                        <th>
-                          POLICY
-                        </th>
-
-                        <th>
-                          ACTION
-                        </th>
-
+                        <th>INCIDENT</th>
+                        <th>ATTACK</th>
+                        <th>RISK</th>
+                        <th>DECISION</th>
+                        <th>POLICY</th>
+                        <th>ACTION</th>
                       </tr>
 
                     </thead>
-
 
                     <tbody>
 
                       {logs.map((log) => (
 
-                        <tr
-                          key={log.incident_id}
-                        >
+                        <tr key={log.incident_id}>
 
                           <td>
-
                             <strong>
                               {log.incident_id}
                             </strong>
-
                           </td>
-
 
                           <td>
                             {log.attack_type}
                           </td>
-
 
                           <td>
 
@@ -1823,7 +1482,6 @@ function App() {
 
                           </td>
 
-
                           <td>
 
                             <span
@@ -1836,12 +1494,10 @@ function App() {
 
                           </td>
 
-
                           <td>
                             {log.policy_id ||
-                              "AI-SAFETY-001"}
+                              "—"}
                           </td>
-
 
                           <td>
                             {log.action_taken ||
@@ -1866,29 +1522,16 @@ function App() {
         )}
 
       </main>
-
     </div>
   );
 }
-
-
-/* ============================================================
-   COMPONENTS
-============================================================ */
-
-
-/* ============================================================
-   STAT CARD
-============================================================ */
 
 function StatCard({
   label,
   value,
   icon,
 }) {
-
   return (
-
     <div className="stat-card">
 
       <div className="stat-icon">
@@ -1911,19 +1554,12 @@ function StatCard({
   );
 }
 
-
-/* ============================================================
-   DETAIL
-============================================================ */
-
 function Detail({
   label,
   value,
   className = "",
 }) {
-
   return (
-
     <div className="detail-item">
 
       <span>
@@ -1938,18 +1574,11 @@ function Detail({
   );
 }
 
-
-/* ============================================================
-   GATEWAY ROW
-============================================================ */
-
 function GatewayRow({
   name,
   status,
 }) {
-
   return (
-
     <div className="gateway-row">
 
       <span className="gateway-check">
@@ -1968,28 +1597,18 @@ function GatewayRow({
   );
 }
 
-
-/* ============================================================
-   EVENT LIST
-============================================================ */
-
 function EventList({
   logs,
 }) {
-
   if (!logs.length) {
-
     return (
-
       <div className="empty-events">
         No security events recorded yet.
       </div>
-
     );
   }
 
   return (
-
     <div className="event-list">
 
       {logs.map((log) => (
@@ -2002,15 +1621,12 @@ function EventList({
           <div
             className={`event-status ${log.decision.toLowerCase()}`}
           >
-
             {log.decision === "BLOCK"
               ? "✕"
               : log.decision === "REVIEW"
               ? "!"
               : "✓"}
-
           </div>
-
 
           <div className="event-main">
 
@@ -2023,7 +1639,6 @@ function EventList({
             </span>
 
           </div>
-
 
           <div className="event-risk">
 
@@ -2045,11 +1660,6 @@ function EventList({
   );
 }
 
-
-/* ============================================================
-   SECURITY ZONE
-============================================================ */
-
 function Zone({
   type,
   title,
@@ -2059,7 +1669,6 @@ function Zone({
   decision = null,
   description,
 }) {
-
   const decisionClass =
     decision === "BLOCK"
       ? "blocked"
@@ -2070,7 +1679,6 @@ function Zone({
       : "";
 
   return (
-
     <div
       className={`zone-card ${type} ${
         active ? "active" : ""
@@ -2078,28 +1686,22 @@ function Zone({
     >
 
       <div className="zone-icon">
-
         {type === "gateway"
           ? "🛡"
           : "◈"}
-
       </div>
-
 
       <span>
         {subtitle}
       </span>
 
-
       <h3>
         {title}
       </h3>
 
-
       <div className="zone-status">
         {status}
       </div>
-
 
       <p>
         {description}
@@ -2109,25 +1711,17 @@ function Zone({
   );
 }
 
-
-/* ============================================================
-   PIPELINE STEP
-============================================================ */
-
 function PipelineStep({
   number,
   title,
   text,
 }) {
-
   return (
-
     <div className="pipeline-step">
 
       <div className="pipeline-number">
         {number}
       </div>
-
 
       <div>
 
@@ -2145,11 +1739,6 @@ function PipelineStep({
   );
 }
 
-
-/* ============================================================
-   POLICY ROW
-============================================================ */
-
 function PolicyRow({
   id,
   name,
@@ -2158,7 +1747,6 @@ function PolicyRow({
   description,
   incidents = 0,
 }) {
-
   const className =
     action === "BLOCK"
       ? "danger"
@@ -2167,13 +1755,11 @@ function PolicyRow({
       : "success";
 
   return (
-
     <div className="policy-row">
 
       <div className="policy-id">
         {id}
       </div>
-
 
       <div className="policy-name">
 
@@ -2186,15 +1772,12 @@ function PolicyRow({
         </span>
 
         {description && (
-
           <small>
             {description}
           </small>
-
         )}
 
       </div>
-
 
       <div className="policy-incidents">
 
@@ -2208,13 +1791,11 @@ function PolicyRow({
 
       </div>
 
-
       <div
         className={`policy-action ${className}`}
       >
         {action}
       </div>
-
 
       <div className="policy-status">
 
@@ -2227,6 +1808,5 @@ function PolicyRow({
     </div>
   );
 }
-
 
 export default App;
