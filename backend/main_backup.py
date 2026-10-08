@@ -1,0 +1,385 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
+import uuid
+
+# ============================================================
+# BAYORA SECURITY API
+# ============================================================
+
+app = FastAPI(
+    title="Bayora Security API",
+    description="Adversarial AI Security Testing Platform",
+    version="1.0.0"
+)
+
+# ============================================================
+# CORS
+# ============================================================
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=".*",
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ============================================================
+# AUDIT LOG STORAGE
+# ============================================================
+
+audit_logs = []
+
+
+# ============================================================
+# SECURITY ANALYSIS ENGINE
+# ============================================================
+
+def analyze_security(prompt: str, attack_type: str):
+
+    text = prompt.lower()
+
+    indicators = [
+        "ignore previous instructions",
+        "ignore all previous instructions",
+        "system prompt",
+        "reveal your instructions",
+        "reveal system prompt",
+        "bypass safety",
+        "bypass security",
+        "jailbreak",
+        "developer message",
+        "forget your rules",
+        "disregard previous",
+        "override instructions",
+        "ignore your rules",
+        "show hidden instructions",
+        "reveal hidden instructions",
+        "hidden prompt",
+        "secret instructions",
+    ]
+
+    matches = [
+        indicator
+        for indicator in indicators
+        if indicator in text
+    ]
+
+    # Base risk
+    risk_score = 15
+
+    # Attack type risk
+    if attack_type == "Prompt Injection":
+        risk_score += 25
+
+    elif attack_type == "Jailbreak":
+        risk_score += 35
+
+    elif attack_type == "Sensitive Information":
+        risk_score += 30
+
+    elif attack_type == "Malicious Instruction":
+        risk_score += 30
+
+    # Indicator risk
+    if matches:
+        risk_score += min(
+            len(matches) * 12,
+            45
+        )
+
+    # Keep score between 0 and 100
+    risk_score = min(
+        risk_score,
+        100
+    )
+
+    # Security decision
+    if risk_score >= 70:
+
+        decision = "BLOCK"
+        risk_level = "HIGH"
+
+    elif risk_score >= 40:
+
+        decision = "REVIEW"
+        risk_level = "MEDIUM"
+
+    else:
+
+        decision = "ALLOW"
+        risk_level = "LOW"
+
+    return {
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "decision": decision,
+        "matched_indicators": matches,
+    }
+
+
+# ============================================================
+# ROOT ENDPOINT
+# ============================================================
+
+@app.get("/")
+def root():
+
+    return {
+        "service": "Bayora Security API",
+        "status": "operational",
+        "version": "1.0.0"
+    }
+
+
+# ============================================================
+# HEALTH CHECK
+# ============================================================
+
+@app.get("/health")
+def health():
+
+    return {
+        "status": "healthy",
+        "service": "bayora-security-engine"
+    }
+
+
+# ============================================================
+# API STATUS
+# ============================================================
+
+@app.get("/api/status")
+def api_status():
+
+    return {
+        "bayora": "online",
+        "security_engine": "active",
+        "policy_gateway": "active",
+        "audit_logging": "active",
+        "total_tests": len(audit_logs),
+        "api_version": "1.0.0"
+    }
+
+
+# ============================================================
+# SECURITY TEST
+# ============================================================
+
+@app.post("/api/security-test")
+def security_test(data: dict):
+
+    # --------------------------------------------------------
+    # Get prompt
+    # --------------------------------------------------------
+
+    prompt = str(
+        data.get(
+            "prompt",
+            ""
+        )
+    ).strip()
+
+    # --------------------------------------------------------
+    # Get attack type
+    # --------------------------------------------------------
+
+    attack_type = str(
+        data.get(
+            "attack_type",
+            "Prompt Injection"
+        )
+    )
+
+    # --------------------------------------------------------
+    # Validate prompt
+    # --------------------------------------------------------
+
+    if not prompt:
+
+        return {
+            "success": False,
+            "error": "Security test prompt cannot be empty."
+        }
+
+    # --------------------------------------------------------
+    # Analyze prompt
+    # --------------------------------------------------------
+
+    analysis = analyze_security(
+        prompt,
+        attack_type
+    )
+
+    # --------------------------------------------------------
+    # Generate incident ID
+    # --------------------------------------------------------
+
+    incident_id = (
+        "BY-"
+        + str(
+            uuid.uuid4()
+        ).replace(
+            "-",
+            ""
+        )[:8].upper()
+    )
+
+    # --------------------------------------------------------
+    # Timestamp
+    # --------------------------------------------------------
+
+    timestamp = datetime.now().isoformat()
+
+    # --------------------------------------------------------
+    # Create audit event
+    # --------------------------------------------------------
+
+    event = {
+
+        "incident_id": incident_id,
+
+        "timestamp": timestamp,
+
+        "attack_type": attack_type,
+
+        "prompt": prompt,
+
+        "risk_score": analysis[
+            "risk_score"
+        ],
+
+        "risk_level": analysis[
+            "risk_level"
+        ],
+
+        "decision": analysis[
+            "decision"
+        ],
+
+        "matched_indicators": analysis[
+            "matched_indicators"
+        ],
+    }
+
+    # --------------------------------------------------------
+    # Store event
+    # --------------------------------------------------------
+
+    audit_logs.insert(
+        0,
+        event
+    )
+
+    # --------------------------------------------------------
+    # Correct security message
+    # --------------------------------------------------------
+
+    if analysis["decision"] == "BLOCK":
+
+        message = (
+            "Request blocked by Bayora policy."
+        )
+
+    elif analysis["decision"] == "REVIEW":
+
+        message = (
+            "Request flagged for security review."
+        )
+
+    else:
+
+        message = (
+            "Request passed Bayora policy evaluation."
+        )
+
+    # --------------------------------------------------------
+    # Return result
+    # --------------------------------------------------------
+
+    return {
+
+        "success": True,
+
+        "incident_id": incident_id,
+
+        "timestamp": timestamp,
+
+        "attack_type": attack_type,
+
+        "risk_score": analysis[
+            "risk_score"
+        ],
+
+        "risk_level": analysis[
+            "risk_level"
+        ],
+
+        "decision": analysis[
+            "decision"
+        ],
+
+        "matched_indicators": analysis[
+            "matched_indicators"
+        ],
+
+        "message": message,
+    }
+
+
+# ============================================================
+# AUDIT LOGS
+# ============================================================
+
+@app.get("/api/audit-logs")
+def get_audit_logs():
+
+    return {
+
+        "success": True,
+
+        "count": len(
+            audit_logs
+        ),
+
+        "logs": audit_logs[:50]
+    }
+
+
+# ============================================================
+# DELETE / CLEAR AUDIT LOGS
+# ============================================================
+
+@app.delete("/api/audit-logs")
+def clear_audit_logs():
+
+    audit_logs.clear()
+
+    return {
+
+        "success": True,
+
+        "message": "All audit logs cleared.",
+
+        "count": 0
+    }
+
+
+# ============================================================
+# STARTUP MESSAGE
+# ============================================================
+
+@app.on_event("startup")
+def startup_event():
+
+    print("")
+    print("==========================================")
+    print("        BAYORA SECURITY ENGINE")
+    print("==========================================")
+    print("Security Engine : ACTIVE")
+    print("Policy Gateway  : ACTIVE")
+    print("Audit Logging   : ACTIVE")
+    print("API Version     : 1.0.0")
+    print("==========================================")
+    print("")
